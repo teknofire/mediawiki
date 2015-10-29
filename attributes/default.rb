@@ -10,7 +10,7 @@ default['mediawiki']['vault'] = 'web_app_secrets'
 default['mediawiki']['vault_item'] = 'wiki'
 
 default['mediawiki']['cert_vault'] = 'certificates'
-default['mediawiki']['cert_vault_item'] = 'test'
+default['mediawiki']['cert_vault_item'] = 'wiki'
 
 default['mediawiki']['main_version'] = '1.25'
 default['mediawiki']['sub_version'] = '.3'
