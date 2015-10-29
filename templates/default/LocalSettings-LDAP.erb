@@ -1,0 +1,62 @@
+# LDAP
+require_once 'extensions/LdapAuthentication/LdapAuthentication.php';
+require_once 'includes/AuthPlugin.php';
+$wgAuth = new LdapAuthenticationPlugin();
+
+$wgLDAPUseLocal = <%= node[:mediawiki][:wgLDAPUseLocal] %>;
+
+$wgLDAPDomainNames = array(
+<% node[:mediawiki][:wgLDAPDomainNames].each_with_index do |domain, index| %>
+<%= "'#{domain}'" %><% if index < (domain.size - 1) %>,<% end %>
+<% end %>
+);
+
+$wgLDAPServerNames = array(
+<%= node[:mediawiki][:wgLDAPServerNames].map{|domain, address| "'#{domain}' => '#{address}'"}.join(",") %>
+);
+
+$wgLDAPEncryptionType = array(
+<%= node[:mediawiki][:wgLDAPEncryptionType].map{|domain, type| "'#{domain}' => '#{type}'"}.join(",") %>
+);
+
+# $wgLDAPPort = array(
+#  'openldap_example_com' => 636,
+# );
+
+$wgLDAPProxyAgent = array(
+<%= node[:mediawiki][:wgLDAPProxyAgent].map{|domain, agent| "'#{domain}' => '#{agent}'"}.join(",") %>
+);
+
+$wgLDAPProxyAgentPassword = array(
+<%= node[:mediawiki][:wgLDAPProxyAgentPassword].map{|domain, password| "'#{domain}' => \"#{password}\""}.join(",") %>
+);
+
+$wgLDAPSearchAttributes = array(
+<%= node[:mediawiki][:wgLDAPSearchAttributes].map{|domain, search| "'#{domain}' => '#{search}'"}.join(",") %>
+);
+
+$wgLDAPBaseDNs = array(
+<%= node[:mediawiki][:wgLDAPBaseDNs].map{|domain, basedn| "'#{domain}' => '#{basedn}'"}.join(",") %>
+);
+
+$wgLDAPPreferences = array(
+<%= node[:mediawiki][:wgLDAPPreferences].map{|domain, array| "'#{domain}' => #{array}"}.join(",") %>
+);
+
+$wgLDAPDisableAutoCreate = array(
+<%= node[:mediawiki][:wgLDAPDisableAutoCreate].map{|domain, create| "'#{domain}' => #{create}"}.join(",") %>
+);
+
+# Group based restriction
+# $wgLDAPGroupUseFullDN = array( "openldap_example_com"=>false );
+# $wgLDAPGroupObjectclass = array( "openldap_example_com"=>"posixgroup" );
+# $wgLDAPGroupAttribute = array( "openldap_example_com"=>"memberuid" );
+# $wgLDAPGroupSearchNestedGroups = array( "openldap_example_com"=>false );
+# $wgLDAPGroupNameAttribute = array( "openldap_example_com"=>"cn" );
+# $wgLDAPRequiredGroups = array( "openldap_example_com"=>array("cn=staff,ou=Group,dc=example,dc=com
+# "));
+# $wgLDAPLowerCaseUsername = array(
+#  'openldap_example_com' => true,
+# );
+
+# $wgDebugLogGroups['ldap'] = '/tmp/debug.log';

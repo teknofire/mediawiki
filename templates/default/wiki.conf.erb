@@ -1,0 +1,39 @@
+<VirtualHost *:80>
+   ServerName <%= @params[:servername] %>
+   ServerAlias <% @params[:serveraliases].each do |a| %><%= "#{a}" %> <% end %>
+
+   Redirect "/" "https://<%= @params[:servername] %>:443"
+
+</VirtualHost>
+<VirtualHost *:443>
+   ServerName <%= @params[:servername] %>
+   ServerAlias <% @params[:serveraliases].each do |a| %><%= "#{a}" %> <% end %>
+   DocumentRoot <%= @params[:docroot] %>
+
+   SSLEngine on
+   SSLCertificateFile /etc/pki/tls/certs/<%= @params[:certname] %>.crt
+   SSLCertificateKeyFile /etc/pki/tls/private/<%= @params[:certname] %>.key
+
+   RewriteEngine on
+   # Short url for wiki pages
+   RewriteRule ^/?wiki(/.*)?$ %{DOCUMENT_ROOT}/<%= @params[:mediawiki_dir] %>/index.php [L]
+   # Redirect / to Main Page
+   RewriteRule ^/*$ %{DOCUMENT_ROOT}/<%= @params[:mediawiki_dir] %>/index.php [L]
+
+   <Directory <%= @params[:docroot] %>>
+     Options FollowSymLinks
+     AllowOverride None
+     Order allow,deny
+     Allow from all
+   </Directory>
+
+   # some directories must be protected
+    <Directory <%= @params[:docroot] %>\mw-config>
+        Options -FollowSymLinks
+        AllowOverride None
+    </Directory>
+
+   LogLevel info
+   ErrorLog <%= @node[:apache][:log_dir] %>/<%= @params[:name] %>-error.log
+   CustomLog <%= @node[:apache][:log_dir] %>/<%= @params[:name] %>-access.log combined
+</VirtualHost>
