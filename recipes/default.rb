@@ -114,7 +114,6 @@ if node['mediawiki']['ldap'] == true
   end
   execute "Setup LDAP Database" do
     command "php #{node['mediawiki']['install_dir']}/maintenance/update.php"
-    #not_if {File.exists?("#{node['mediawiki']['install_dir']}/LocalSettings.php")}
   end
 end
 
@@ -122,9 +121,9 @@ execute "Changing Permissions on MediaWiki install" do
   command "chown -R  #{node['mediawiki']['owner']}:#{node['mediawiki']['group']} #{node['mediawiki']['install_dir']}"
 end
 
-certificate_manage node['mediawiki']['cert_vault_item'].to_s do
-  cert_file "#{node['mediawiki']['cert_vault_item'].to_s}.crt"
-  key_file "#{node['mediawiki']['cert_vault_item'].to_s}.key"
+certificate_manage node['mediawiki']['cert_vault_item'] do
+  cert_file "#{node['mediawiki']['cert_vault_item']}.crt"
+  key_file "#{node['mediawiki']['cert_vault_item']}.key"
   cert_path "/etc/pki/tls"
   data_bag "#{node['mediawiki']['cert_vault']}"
 end
