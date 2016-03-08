@@ -26,6 +26,7 @@ include_recipe 'apache2::default'
 include_recipe 'apache2::mod_ssl'
 include_recipe 'apache2::mod_php5'
 include_recipe 'php::ini'
+include_recipe 'ssl-vault::default'
 
 %w(httpd php-xml php-pecl-apc php-intl git ImageMagick).each do |pkg|
   package pkg do
@@ -121,13 +122,20 @@ execute "Changing Permissions on MediaWiki install" do
   command "chown -R  #{node['mediawiki']['owner']}:#{node['mediawiki']['group']} #{node['mediawiki']['install_dir']}"
 end
 
-certificate_manage node['mediawiki']['cert_vault_item'] do
-  cert_file "#{node['mediawiki']['cert_vault_item']}.crt"
-  key_file "#{node['mediawiki']['cert_vault_item']}.key"
-  cert_path "/etc/pki/tls"
-  data_bag "#{node['mediawiki']['cert_vault']}"
-end
-
 service 'httpd' do
   action [:enable, :start]
+end
+
+# Remove secret attributes
+ruby_block 'remove-secret-attributes' do
+  block do
+    node.rm('mediawiki', 'wgDBuser')
+    node.rm('mediawiki', 'wgDBpassword')
+    node.rm('mediawiki', 'admin_user')
+    node.rm('mediawiki', 'admin_user_password')
+    node.rm('mediawiki', 'wgSecretKey')
+    node.rm('mediawiki', 'wgLDAPProxyAgent')
+    node.rm('mediawiki', 'wgLDAPProxyAgentPassword')
+  end
+  subscribes :create, 'template[#{node[:mediawiki][:install_dir]}/LocalSettings.php]', :immediately
 end
