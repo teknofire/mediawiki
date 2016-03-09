@@ -9,9 +9,6 @@ default['mediawiki']['servername'] = 'localhost'
 default['mediawiki']['vault'] = 'web_app_secrets'
 default['mediawiki']['vault_item'] = 'wiki'
 
-default['mediawiki']['cert_vault'] = 'certificates'
-default['mediawiki']['cert_vault_item'] = 'wiki'
-
 default['mediawiki']['main_version'] = '1.25'
 default['mediawiki']['sub_version'] = '.3'
 
@@ -38,6 +35,13 @@ default['mediawiki']['wgLDAPBaseDNs'] = { blah_example_com: 'ou=peopledc=example
 default['mediawiki']['wgLDAPUseLocal'] = false
 default['mediawiki']['wgLDAPPreferences'] = { blah_example_com: "array( 'email' => 'mail')" }
 default['mediawiki']['wgLDAPDisableAutoCreate'] = { blah_example_com: false }
+
+# SSL Cert
+override['ssl-vault']['certificates'] = ['wiki']
+if platform_family?('rhel')
+  override['ssl-vault']['private_key_directory'] = '/etc/pki/tls/private'
+  override['ssl-vault']['certificate_directory'] = '/etc/pki/tls/certs'
+end
 
 # PHP Settings
 override['php']['directives'] = { upload_max_filesize: "20M", post_max_size: "20M" }
