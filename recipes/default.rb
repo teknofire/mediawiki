@@ -98,6 +98,17 @@ execute "Setup MediaWiki" do
   not_if {File.exists?("#{node['mediawiki']['install_dir']}/LocalSettings.php")}
 end
 
+if node['mediawiki']['wgLogo_remote']
+  logo = "#{node['mediawiki']['wgLogo_remote']}".split('/')[-1]
+  remote_file "#{node['mediawiki']['install_dir']}/images/#{logo}" do
+    source node['mediawiki']['wgLogo_remote']
+    owner node['mediawiki']['owner']
+    group node['mediawiki']['group']
+    mode '0755'
+    action :create
+  end
+end
+
 template "#{node['mediawiki']['install_dir']}/LocalSettings.php" do
   source 'LocalSettings.php.erb'
   mode 0600

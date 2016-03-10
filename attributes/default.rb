@@ -17,6 +17,7 @@ default['mediawiki']['full_version'] = "#{node['mediawiki']['main_version']}#{no
 default['mediawiki']['package_url'] = "http://releases.wikimedia.org/mediawiki/#{node['mediawiki']['main_version']}/mediawiki-#{node['mediawiki']['full_version']}.tar.gz"
 
 default['mediawiki']['wgSitename'] = 'Sitename'
+default['mediawiki']['wgLogo_remote'] = nil
 default['mediawiki']['wgServer'] = "https://#{node['mediawiki']['servername']}:5443"
 
 default['mediawiki']['local_database'] = true
