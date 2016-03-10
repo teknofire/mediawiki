@@ -104,7 +104,7 @@ if node['mediawiki']['wgLogo_remote']
     source node['mediawiki']['wgLogo_remote']
     owner node['mediawiki']['owner']
     group node['mediawiki']['group']
-    mode '0755'
+    mode '0744'
     action :create
   end
 end
