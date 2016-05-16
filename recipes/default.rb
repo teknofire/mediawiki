@@ -88,7 +88,7 @@ web_app "wiki" do
   docroot node['mediawiki']['web_dir']
   servername node['mediawiki']['servername']
   serveraliases [node[:hostname], "wiki"]
-  certname node['ssl-vault']['certificates']
+  certname node['ssl-vault']['certificates'][0]
   mediawiki_dir node['mediawiki']['mediawiki_dir']
   template "wiki.conf.erb"
 end
