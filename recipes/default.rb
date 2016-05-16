@@ -88,7 +88,7 @@ web_app "wiki" do
   docroot node['mediawiki']['web_dir']
   servername node['mediawiki']['servername']
   serveraliases [node[:hostname], "wiki"]
-  certname node['mediawiki']['cert_vault_item']
+  certname node['ssl-vault']['certificates']
   mediawiki_dir node['mediawiki']['mediawiki_dir']
   template "wiki.conf.erb"
 end
@@ -98,7 +98,7 @@ execute "Setup MediaWiki" do
   not_if {File.exists?("#{node['mediawiki']['install_dir']}/LocalSettings.php")}
 end
 
-if node['mediawiki']['wgLogo_remote']
+if !node['mediawiki']['wgLogo_remote'].nil?
   logo = "#{node['mediawiki']['wgLogo_remote']}".split('/')[-1]
   remote_file "#{node['mediawiki']['install_dir']}/images/#{logo}" do
     source node['mediawiki']['wgLogo_remote']
