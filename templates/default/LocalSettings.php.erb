@@ -56,6 +56,9 @@ $wgEnotifUserTalk = false; # UPO
 $wgEnotifWatchlist = false; # UPO
 $wgEmailAuthentication = true;
 
+# Blocked users will not be allowed to login
+$wgBlockDisablesLogin = <%= node[:mediawiki][:wgBlockDisablesLogin] %>;
+
 ## Database settings
 $wgDBtype = "<%= node[:mediawiki][:wgDBtype] %>";
 $wgDBserver = "<%= node[:mediawiki][:wgDBserver] %>";

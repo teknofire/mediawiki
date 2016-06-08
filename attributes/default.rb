@@ -26,6 +26,8 @@ default['mediawiki']['wgDBname'] = 'wiki'
 default['mediawiki']['wgDBport'] = '5432'
 default['mediawiki']['wgDBserver'] = '127.0.0.1'
 
+default['mediawiki']['wgBlockDisablesLogin'] = false
+
 default['mediawiki']['ldap'] = true
 default['mediawiki']['ldapplugin_url'] = 'https://extdist.wmflabs.org/dist/extensions/LdapAuthentication-REL1_25-d4db6f0.tar.gz'
 default['mediawiki']['wgLDAPDomainNames'] = [ 'blah_example_com' ]
