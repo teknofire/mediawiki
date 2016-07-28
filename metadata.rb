@@ -4,12 +4,11 @@ maintainer_email 'support+chef@gina.alaska.edu'
 license          'Apache 2.0'
 description      'Installs/Configures mediawiki'
 long_description 'Installs/Configures mediawiki'
-version          '1.3.0'
+version          '1.4.0'
 
 supports 'rhel', '=6'
 
 depends 'apache2', '~> 3.1.0'
-depends 'certificate', '=1.0.0'
 depends 'ssl-vault', '~> 1.1.15'
 depends 'chef-vault', '~> 1.3.0'
 depends 'database', '~> 4.0.9'

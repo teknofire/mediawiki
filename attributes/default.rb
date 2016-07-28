@@ -20,6 +20,9 @@ default['mediawiki']['wgSitename'] = 'Sitename'
 default['mediawiki']['wgLogo_remote'] = nil
 default['mediawiki']['wgServer'] = "https://#{node['mediawiki']['servername']}:5443"
 
+# Allowed uploaded file types
+default['mediawiki']['wgFileExtensions'] = [ 'png', 'gif', 'jpg', 'jpeg' ]
+
 default['mediawiki']['local_database'] = true
 default['mediawiki']['wgDBtype'] = 'postgres'
 default['mediawiki']['wgDBname'] = 'wiki'
