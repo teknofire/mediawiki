@@ -28,7 +28,13 @@ include_recipe 'apache2::mod_php5'
 include_recipe 'php::ini'
 include_recipe 'ssl-vault::default'
 
-%w(httpd php-xml php-pecl-apc php-intl git ImageMagick).each do |pkg|
+if platform_family?('rhel')
+  packages = %w(php-xml php-pecl-apc php-intl git ImageMagick)
+elsif platform_family?('debian')
+  packages = %w(php-xml-parser php-apc php5-intl git ImageMagick)
+end
+
+packages.each do |pkg|
   package pkg do
     action :install
   end
@@ -57,9 +63,16 @@ end
 
 if node['mediawiki']['local_database'] == true
   if node['mediawiki']['wgDBtype'] == 'postgres'
-    package 'php-pgsql' do
-      action :install
+    if platform_family?('rhel')
+      package 'php-pgsql' do
+        action :install
+      end
+    elsif platform_family?('debian')
+      package 'php5-pgsql' do
+        action :install
+      end
     end
+
     postgresql_connection_info = { host: '127.0.0.1',
                                    port: "#{node['mediawiki']['wgDBport']}",
                                    username: 'postgres',

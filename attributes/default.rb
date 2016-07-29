@@ -73,14 +73,27 @@ end
 # PHP Settings - Currently only setting upload size stuff but could be used to set other special PHP settings
 override['php']['directives'] = { upload_max_filesize: "20M", post_max_size: "20M" }
 
-# Database Configuration
-override['postgresql']['enable_pgdg_yum'] = true
+# Database version
 override['postgresql']['version'] = '9.3'
-override['postgresql']['dir'] = "/var/lib/pgsql/#{node['postgresql']['version']}/data"
-override['postgresql']['config']['data_directory'] = "/var/lib/pgsql/#{node['postgresql']['version']}/data"
-override['postgresql']['client']['packages'] = %w(postgresql93 postgresql93-devel)
-override['postgresql']['server']['packages'] = %w(postgresql93-server)
-override['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
-override['postgresql']['contrib']['packages'] = %w(postgresql93-contrib)
+
+# Database Configuration
 override['postgresql']['config']['listen_addresses'] = '0.0.0.0'
 override['postgresql']['config']['port'] = node['mediawiki']['wgDBport']
+
+if platform_family?('rhel')
+  override['postgresql']['enable_pgdg_yum'] = true
+  override['postgresql']['client']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}", "postgresql#{node['postgresql']['version'].split('.').join}-devel"]
+  override['postgresql']['server']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-server"]
+  override['postgresql']['contrib']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-contrib"]
+  override['postgresql']['dir'] = "/var/lib/pgsql/#{node['postgresql']['version']}/data"
+  override['postgresql']['config']['data_directory'] = "/var/lib/pgsql/#{node['postgresql']['version']}/data"
+  override['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
+elsif platform_family?('debian')
+  override['postgresql']['enable_pgdg_apt'] = true
+  override['postgresql']['client']['packages'] = ["postgresql-client-#{node['postgresql']['version']}", "postgresql-server-dev-#{node['postgresql']['version']}"]
+  override['postgresql']['server']['packages'] = ["postgresql-#{node['postgresql']['version']}"]
+  override['postgresql']['contrib']['packages'] = ["postgresql-contrib-#{node['postgresql']['version']}"]
+  override['postgresql']['dir'] = "/var/lib/postgresql/#{node['postgresql']['version']}/main"
+  override['postgresql']['config']['data_directory'] = "/var/lib/postgresql/#{node['postgresql']['version']}/main"
+  override['postgresql']['server']['service_name'] = 'postgresql'
+end
