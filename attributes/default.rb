@@ -1,36 +1,57 @@
+# Base directory to install mediawiki into
 default['mediawiki']['web_dir'] = '/var/www/html'
+# Sub directory to install mediawiki into
 default['mediawiki']['mediawiki_dir'] = 'mediawiki'
+
 default['mediawiki']['install_dir'] = "#{node['mediawiki']['web_dir']}/#{node['mediawiki']['mediawiki_dir']}"
+
+# Owner and group for mediawiki directories and files
 default['mediawiki']['owner'] = 'apache'
 default['mediawiki']['group'] = 'apache'
 
+# FQDN of wiki host
 default['mediawiki']['servername'] = 'localhost'
 
+# Port number to host SSL site on
+default['mediawiki']['port'] = '5443'
+
+default['mediawiki']['wgServer'] = "https://#{node['mediawiki']['servername']}:#{node['mediawiki']['port']}"
+
+# Vault and vault item name to hold database user/pass, admin user/pass, secret key and LDAP stuff
 default['mediawiki']['vault'] = 'web_app_secrets'
 default['mediawiki']['vault_item'] = 'wiki'
 
+# Main and patch versions
 default['mediawiki']['main_version'] = '1.25'
-default['mediawiki']['sub_version'] = '.3'
+default['mediawiki']['patch_version'] = '.3'
 
-default['mediawiki']['full_version'] = "#{node['mediawiki']['main_version']}#{node['mediawiki']['sub_version']}"
+default['mediawiki']['full_version'] = "#{node['mediawiki']['main_version']}#{node['mediawiki']['patch_version']}"
 
 default['mediawiki']['package_url'] = "http://releases.wikimedia.org/mediawiki/#{node['mediawiki']['main_version']}/mediawiki-#{node['mediawiki']['full_version']}.tar.gz"
 
+# Checksum for mediawiki tar.gz file
+default['mediawiki']['mediawiki-checksum'] = '53f3dc6fc7108c835fbfefb09d76e84067112538aaed433d89d7d4551dc205ba'
+
+# Wiki name
 default['mediawiki']['wgSitename'] = 'Sitename'
+
+# URL to artwork for logo. Gets copied onto wiki server. Needs to be 135 x 135 pixels.
 default['mediawiki']['wgLogo_remote'] = nil
-default['mediawiki']['wgServer'] = "https://#{node['mediawiki']['servername']}:5443"
 
 # Allowed uploaded file types
 default['mediawiki']['wgFileExtensions'] = [ 'png', 'gif', 'jpg', 'jpeg' ]
 
+# Database setup
 default['mediawiki']['local_database'] = true
 default['mediawiki']['wgDBtype'] = 'postgres'
 default['mediawiki']['wgDBname'] = 'wiki'
 default['mediawiki']['wgDBport'] = '5432'
 default['mediawiki']['wgDBserver'] = '127.0.0.1'
 
+# Block logins if user is disabled
 default['mediawiki']['wgBlockDisablesLogin'] = false
 
+# LDAP setup. If you don't want it just set first setting to false.
 default['mediawiki']['ldap'] = true
 default['mediawiki']['ldapplugin_url'] = 'https://extdist.wmflabs.org/dist/extensions/LdapAuthentication-REL1_25-d4db6f0.tar.gz'
 default['mediawiki']['wgLDAPDomainNames'] = [ 'blah_example_com' ]
@@ -49,7 +70,7 @@ if platform_family?('rhel')
   override['ssl-vault']['certificate_directory'] = '/etc/pki/tls/certs'
 end
 
-# PHP Settings
+# PHP Settings - Currently only setting upload size stuff but could be used to set other special PHP settings
 override['php']['directives'] = { upload_max_filesize: "20M", post_max_size: "20M" }
 
 # Database Configuration
