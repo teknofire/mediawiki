@@ -51,6 +51,7 @@ end
 tar_extract node['mediawiki']['package_url'] do
     target_dir node['mediawiki']['install_dir']
     creates "#{node['mediawiki']['install_dir']}/extensions"
+    checksum '53f3dc6fc7108c835fbfefb09d76e84067112538aaed433d89d7d4551dc205ba'
     tar_flags ['--strip 1']
 end
 

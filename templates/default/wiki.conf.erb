@@ -11,7 +11,7 @@
    DocumentRoot <%= @params[:docroot] %>
 
    SSLEngine on
-   SSLCertificateFile /etc/pki/tls/certs/<%= @params[:certname] %>.crt
+   SSLCertificateFile /etc/pki/tls/certs/<%= @params[:certname] %>.cert
    SSLCertificateKeyFile /etc/pki/tls/private/<%= @params[:certname] %>.key
 
    RewriteEngine on
