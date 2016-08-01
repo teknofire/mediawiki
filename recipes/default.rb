@@ -131,8 +131,15 @@ template "#{node['mediawiki']['install_dir']}/LocalSettings.php" do
 end
 
 if node['mediawiki']['ldap'] == true
-  package 'php-ldap' do
-    action :install
+  if platform_family?('rhel')
+    packages = %w(php-ldap)
+  else platform_family?('debian')
+    packages = %w(php5-ldap)
+  end
+  packages.each do |pkg|
+    package pkg do
+      action :install
+    end
   end
   tar_extract node['mediawiki']['ldapplugin_url'] do
       target_dir "#{node['mediawiki']['install_dir']}/extensions"
@@ -147,7 +154,18 @@ execute "Changing Permissions on MediaWiki install" do
   command "chown -R  #{node['mediawiki']['owner']}:#{node['mediawiki']['group']} #{node['mediawiki']['install_dir']}"
 end
 
+if platform_family?('rhel')
+  web_service = 'httpd'
+else platform_family?('debian')
+  web_server = 'apache2'
+end
+
 service 'httpd' do
+  if platform_family?('rhel')
+    service_name 'httpd'
+  else platform_family?('debian')
+    service_name 'apache2'
+  end
   action [:enable, :start]
 end
 

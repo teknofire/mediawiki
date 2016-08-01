@@ -6,8 +6,13 @@ default['mediawiki']['mediawiki_dir'] = 'mediawiki'
 default['mediawiki']['install_dir'] = "#{node['mediawiki']['web_dir']}/#{node['mediawiki']['mediawiki_dir']}"
 
 # Owner and group for mediawiki directories and files
-default['mediawiki']['owner'] = 'apache'
-default['mediawiki']['group'] = 'apache'
+if platform_family?('rhel')
+  default['mediawiki']['owner'] = 'apache'
+  default['mediawiki']['group'] = 'apache'
+elsif platform_family?('debian')
+  default['mediawiki']['owner'] = 'root'
+  default['mediawiki']['group'] = 'www-data'
+end
 
 # FQDN of wiki host
 default['mediawiki']['servername'] = 'localhost'
