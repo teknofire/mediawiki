@@ -28,7 +28,13 @@ include_recipe 'apache2::mod_php5'
 include_recipe 'php::ini'
 include_recipe 'ssl-vault::default'
 
-%w(httpd php-xml php-pecl-apc php-intl git ImageMagick).each do |pkg|
+if platform_family?('rhel')
+  packages = %w(php-xml php-pecl-apc php-intl git ImageMagick)
+elsif platform_family?('debian')
+  packages = %w(php-xml-parser php-apc php5-intl git ImageMagick)
+end
+
+packages.each do |pkg|
   package pkg do
     action :install
   end
@@ -57,9 +63,16 @@ end
 
 if node['mediawiki']['local_database'] == true
   if node['mediawiki']['wgDBtype'] == 'postgres'
-    package 'php-pgsql' do
-      action :install
+    if platform_family?('rhel')
+      package 'php-pgsql' do
+        action :install
+      end
+    elsif platform_family?('debian')
+      package 'php5-pgsql' do
+        action :install
+      end
     end
+
     postgresql_connection_info = { host: '127.0.0.1',
                                    port: "#{node['mediawiki']['wgDBport']}",
                                    username: 'postgres',
@@ -118,8 +131,15 @@ template "#{node['mediawiki']['install_dir']}/LocalSettings.php" do
 end
 
 if node['mediawiki']['ldap'] == true
-  package 'php-ldap' do
-    action :install
+  if platform_family?('rhel')
+    packages = %w(php-ldap)
+  else platform_family?('debian')
+    packages = %w(php5-ldap)
+  end
+  packages.each do |pkg|
+    package pkg do
+      action :install
+    end
   end
   tar_extract node['mediawiki']['ldapplugin_url'] do
       target_dir "#{node['mediawiki']['install_dir']}/extensions"
@@ -134,7 +154,18 @@ execute "Changing Permissions on MediaWiki install" do
   command "chown -R  #{node['mediawiki']['owner']}:#{node['mediawiki']['group']} #{node['mediawiki']['install_dir']}"
 end
 
+if platform_family?('rhel')
+  web_service = 'httpd'
+else platform_family?('debian')
+  web_server = 'apache2'
+end
+
 service 'httpd' do
+  if platform_family?('rhel')
+    service_name 'httpd'
+  else platform_family?('debian')
+    service_name 'apache2'
+  end
   action [:enable, :start]
 end
 
