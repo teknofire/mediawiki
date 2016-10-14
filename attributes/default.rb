@@ -69,36 +69,37 @@ default['mediawiki']['wgLDAPPreferences'] = { blah_example_com: "array( 'email' 
 default['mediawiki']['wgLDAPDisableAutoCreate'] = { blah_example_com: false }
 
 # SSL Cert
-override['ssl-vault']['certificates'] = ['wiki']
+normal['ssl-vault']['certificates'] = ['wiki']
 if platform_family?('rhel')
-  override['ssl-vault']['private_key_directory'] = '/etc/pki/tls/private'
-  override['ssl-vault']['certificate_directory'] = '/etc/pki/tls/certs'
+  normal['ssl-vault']['private_key_directory'] = '/etc/pki/tls/private'
+  normal['ssl-vault']['certificate_directory'] = '/etc/pki/tls/certs'
 end
 
 # PHP Settings - Currently only setting upload size stuff but could be used to set other special PHP settings
-override['php']['directives'] = { upload_max_filesize: "20M", post_max_size: "20M" }
+normal['php']['directives'] = { upload_max_filesize: "20M", post_max_size: "20M" }
 
 # Database version
-override['postgresql']['version'] = '9.3'
+normal['postgresql']['version'] = '9.3'
 
 # Database Configuration
-override['postgresql']['config']['listen_addresses'] = '0.0.0.0'
-override['postgresql']['config']['port'] = node['mediawiki']['wgDBport']
+normal['postgresql']['config']['listen_addresses'] = '0.0.0.0'
+normal['postgresql']['config']['port'] = node['mediawiki']['wgDBport']
+override['postgresql']['config']['ssl'] = false
 
 if platform_family?('rhel')
-  override['postgresql']['enable_pgdg_yum'] = true
-  override['postgresql']['client']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}", "postgresql#{node['postgresql']['version'].split('.').join}-devel"]
-  override['postgresql']['server']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-server"]
-  override['postgresql']['contrib']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-contrib"]
-  override['postgresql']['dir'] = "/var/lib/pgsql/#{node['postgresql']['version']}/data"
-  override['postgresql']['config']['data_directory'] = "/var/lib/pgsql/#{node['postgresql']['version']}/data"
-  override['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
+  normal['postgresql']['enable_pgdg_yum'] = true
+  normal['postgresql']['client']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}", "postgresql#{node['postgresql']['version'].split('.').join}-devel"]
+  normal['postgresql']['server']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-server"]
+  normal['postgresql']['contrib']['packages'] = ["postgresql#{node['postgresql']['version'].split('.').join}-contrib"]
+  normal['postgresql']['dir'] = "/var/lib/pgsql/#{node['postgresql']['version']}/data"
+  normal['postgresql']['config']['data_directory'] = "/var/lib/pgsql/#{node['postgresql']['version']}/data"
+  normal['postgresql']['server']['service_name'] = "postgresql-#{node['postgresql']['version']}"
 elsif platform_family?('debian')
-  override['postgresql']['enable_pgdg_apt'] = true
-  override['postgresql']['client']['packages'] = ["postgresql-client-#{node['postgresql']['version']}", "postgresql-server-dev-#{node['postgresql']['version']}"]
-  override['postgresql']['server']['packages'] = ["postgresql-#{node['postgresql']['version']}"]
-  override['postgresql']['contrib']['packages'] = ["postgresql-contrib-#{node['postgresql']['version']}"]
-  override['postgresql']['dir'] = "/var/lib/postgresql/#{node['postgresql']['version']}/main"
-  override['postgresql']['config']['data_directory'] = "/var/lib/postgresql/#{node['postgresql']['version']}/main"
-  override['postgresql']['server']['service_name'] = 'postgresql'
+  normal['postgresql']['enable_pgdg_apt'] = true
+  normal['postgresql']['client']['packages'] = ["postgresql-client-#{node['postgresql']['version']}", "postgresql-server-dev-#{node['postgresql']['version']}"]
+  normal['postgresql']['server']['packages'] = ["postgresql-#{node['postgresql']['version']}"]
+  normal['postgresql']['contrib']['packages'] = ["postgresql-contrib-#{node['postgresql']['version']}"]
+  normal['postgresql']['dir'] = "/var/lib/postgresql/#{node['postgresql']['version']}/main"
+  normal['postgresql']['config']['data_directory'] = "/var/lib/postgresql/#{node['postgresql']['version']}/main"
+  normal['postgresql']['server']['service_name'] = 'postgresql'
 end
