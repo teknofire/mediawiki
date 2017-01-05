@@ -125,6 +125,7 @@ end
 
 template "#{node['mediawiki']['install_dir']}/LocalSettings.php" do
   source 'LocalSettings.php.erb'
+  cookbook node['mediawiki']['localsettings_cookbook'] if node['mediawiki'].attribute?('localsettings_cookbook')
   mode 0600
   owner "#{node['mediawiki']['owner']}"
   group "#{node['mediawiki']['group']}"
